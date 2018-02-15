@@ -77,12 +77,18 @@ def sk2pan(skData, target="Target"):
     expdata = pd.DataFrame(skData.data, columns=skData.feature_names)
     objdata = pd.DataFrame(skData.target, columns=[target])
     
-    objdict = dict(zip(np.arange(skData.target_names.shape[0]), skData.target_names))
+    try:
+        objdict = dict(zip(np.arange(skData.target_names.shape[0]), skData.target_names))
+        objdata = objdata[target].map(objdict)
+    except:
+        pass
     
-    return pd.concat([expdata, objdata[target].map(objdict)], axis=1)
+    return pd.concat([expdata, objdata], axis=1)
  
 if __name__ == "__main__":
      
-    df = pd.read_csv("iris.csv", index_col=0)   
+    df = pd.read_csv("iris.csv")   
     skData = pan2sk(df, target='Name', name='iris')
-    pdData = sk2pan(skData, target='Name')
+    
+    skData = datasets.load_iris()
+    df = sk2pan(skData, target='Name')
